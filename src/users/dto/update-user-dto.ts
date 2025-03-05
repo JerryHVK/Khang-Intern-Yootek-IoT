@@ -1,13 +1,13 @@
 import { IsString, IsNotEmpty, IsEmail, IsNumber, IsOptional } from "class-validator";
 
-export class CreateUserDTO{
+export class UpdateUserDTO{
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly name: string;
 
     @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     readonly email: string;
 
     @IsString()
@@ -15,7 +15,7 @@ export class CreateUserDTO{
     readonly gender: string;
 
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     readonly age: number;
 
     @IsString()

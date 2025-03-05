@@ -7,7 +7,10 @@ Content-Type: application/json
 
 {
     "name": "khang",
-    "email": "khang17@gmail.com"
+    "email": "khang17@gmail.com",
+    "gender": "male",
+    "age": 22,
+    "address": "Nghe An"
 }
 
 ### Get all users
@@ -22,8 +25,11 @@ Content-Type: application/json
 
 {
     "name": "khang",
-    "email": "khanghoangvan29042003@gmail.com"
+    "email": "khanghoangvan29042003@gmail.com",
+    "gender": "male",
+    "age": 18,
+    "address": "Nghe An"
 }
 
 ### Delete user by id
-DELETE https://localhost:3000/users/1
+DELETE http://localhost:3000/users/1
