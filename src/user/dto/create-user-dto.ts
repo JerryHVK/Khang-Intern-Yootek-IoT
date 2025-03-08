@@ -11,12 +11,8 @@ export class CreateUserDTO{
     readonly email: string;
 
     @IsString()
-    @IsOptional()
-    readonly gender: string;
-
-    @IsNumber()
     @IsNotEmpty()
-    readonly age: number;
+    readonly password: string;
 
     @IsString()
     @IsOptional()
