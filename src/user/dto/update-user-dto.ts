@@ -12,11 +12,7 @@ export class UpdateUserDTO{
 
     @IsString()
     @IsOptional()
-    readonly gender: string;
-
-    @IsNumber()
-    @IsOptional()
-    readonly age: number;
+    readonly password: string;
 
     @IsString()
     @IsOptional()
