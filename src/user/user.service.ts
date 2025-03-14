@@ -14,9 +14,11 @@ export class UserService {
       where: userWhereUniqueInput,
     });
 
-    if(user == null){
-        throw new HttpException("Not valid id", HttpStatus.BAD_REQUEST);
-    }
+    
+
+    // if(user == null){
+    //     throw new HttpException("Not valid id", HttpStatus.BAD_REQUEST);
+    // }
     return user;
   }
 

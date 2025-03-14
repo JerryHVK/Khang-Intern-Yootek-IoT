@@ -32,3 +32,89 @@ Content-Type: application/json
 
 ### Delete user by id
 DELETE {{hostName}}:{{hostPort}}/user/1
+
+
+
+
+
+
+
+// authen
+
+###
+GET {{hostName}}:{{hostPort}}/auth/profile
+
+###
+POST {{hostName}}:{{hostPort}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "khang17@gmail.com",
+    "password": "1234",
+    "access_token": ""
+}
+
+
+### 
+GET {{hostName}}:{{hostPort}}/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsInVzZXJuYW1lIjoia2hhbmciLCJpYXQiOjE3NDE1ODgzODIsImV4cCI6MTc0MTY3NDc4Mn0.dwRBiSar1H58nt0dAVXbHlH5An2npV4DYeEmZmStFWM
+
+
+
+
+
+
+
+
+
+
+
+### Signup
+POST {{hostName}}:{{hostPort}}/auth/signup
+Content-Type: application/json
+
+{
+    "name": "khang",
+    "email": "khanghv17@gmail.com",
+    "password": "1234",
+    "address": "Nghe An"
+}
+
+### Login
+POST {{hostName}}:{{hostPort}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "khanghv17@gmail.com",
+    "password": "1234"
+}
+
+
+### Create Profile
+POST {{hostName}}:{{hostPort}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlhdCI6MTc0MTkyNzE0MywiZXhwIjoxNzQyMDEzNTQzfQ.LlQZTIYDbTyZv_UF9JhrMQZK2fNkBaAryco3Gwu3pyQ
+Content-Type: application/json
+
+{
+    "bio": "hellohellohello",
+    "avatar": "chua co nha"
+}
+
+### get Profile
+GET {{hostName}}:{{hostPort}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlhdCI6MTc0MTkyNzE0MywiZXhwIjoxNzQyMDEzNTQzfQ.LlQZTIYDbTyZv_UF9JhrMQZK2fNkBaAryco3Gwu3pyQ
+
+
+### Update profile
+PATCH {{hostName}}:{{hostPort}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlhdCI6MTc0MTkyNzE0MywiZXhwIjoxNzQyMDEzNTQzfQ.LlQZTIYDbTyZv_UF9JhrMQZK2fNkBaAryco3Gwu3pyQ
+Content-Type: application/json
+
+{
+    "bio": "papapa",
+    "avatar": "chua co nha"
+}
+
+### Delete profile
+DELETE {{hostName}}:{{hostPort}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlhdCI6MTc0MTkyNzE0MywiZXhwIjoxNzQyMDEzNTQzfQ.LlQZTIYDbTyZv_UF9JhrMQZK2fNkBaAryco3Gwu3pyQ

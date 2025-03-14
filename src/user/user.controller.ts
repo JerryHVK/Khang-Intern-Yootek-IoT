@@ -28,6 +28,12 @@ export class UserController {
     async findById(@Param('id', ParseIntPipe) id: number){
         try{
             const user = await this.userService.user({id});
+            if(user == null){
+                return {
+                    statusCode: HttpStatus.BAD_REQUEST,
+                    message: "Invalid userId",
+                }
+            }
             return {
                 statusCode: HttpStatus.OK,
                 message: "success",
