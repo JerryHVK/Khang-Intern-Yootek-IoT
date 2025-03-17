@@ -10,14 +10,14 @@ export class AppService {
     return {message: "Hello NestJS!"};
   }
 
-  login(email: string, password: string){
-    // login logic here
-    // need to return jwt token
-  }
+  // login(email: string, password: string){
+  //   // login logic here
+  //   // need to return jwt token
+  // }
 
-  signup(createUserDTO: CreateUserDTO){
-    // signup logic here
-    // need to return jwt token
-    return this.userService.createUser(createUserDTO);
-  }
+  // signup(createUserDTO: CreateUserDTO){
+  //   // signup logic here
+  //   // need to return jwt token
+  //   return this.userService.createUser(createUserDTO);
+  // }
 }

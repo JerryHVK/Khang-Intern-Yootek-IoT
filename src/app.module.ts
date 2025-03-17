@@ -6,14 +6,13 @@ import { PostModule } from './post/post.module';
 import { ProfileModule } from './profile/profile.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import configuration from 'config/configuration';
+// import configuration from 'config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
-      load: [configuration]
     }),
     UserModule,
     PostModule,

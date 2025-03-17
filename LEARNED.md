@@ -76,3 +76,37 @@ Tận dụng những gì đã có là điều quan trọng, đó cũng là lí �
 - Ít nhất đó cũng là thời gian mình ngấm hơn về cách tổ chức code
 
 - Cái Role của mình đang hơi rối cấu trúc nha
+
+## JWT register trong auth.module, jwt-auth.guard và jwt.strategy
+- Đây là 3 thứ liên quan đến jwt trong code của mình, và mình chưa hiểu về liên quan giữa chúng
+
+- Sau đây là những gì mình học được khi tra chatgpt
+
+**Cách 3 thứ này làm việc trong 1 flow chung liên quan đến xác thực**
+
+#### Bước1: User logs in
+- AuthService sẽ tạo ra jwt token sử dụng ```JwtService.sign(payload)```
+- token sau đó được gửi trả theo response
+
+#### Bước2: User thực hiện api request tới một route được bảo vệ (không public)
+- User sẽ gửi jwttoken kèm request để phục vụ xác thực
+
+#### Bước3: JwtAuthGuard chạy trước khi controller xử lí request
+- và giai đoạn này JwtAuthGuard kích hoạt JwtStrategy trước để trích xuất và xác thực jwtToken
+
+#### Bước4: JwtStrategy giải mã và xác thực jwt token
+- nếu token valid, thì các thông tin về user trích xuất được từ jwt token, sẽ được gán vào biến req.user
+- nếu không valid, trả về 401 Unauthorized
+
+#### Bước5: Controller thực thi request sau khi jwttoken đã được xác thưc
+
+Tóm lại: 
+> auth.module.ts -> Cung cấp JWT signing (tạo token)
+> jwt.strategy.ts -> thực thi việc giải mã JWT và xác thực token
+> jwt-auth.guard -> Bảo vệ các routes bằng jwt authen
+
+## Anh Nam Anh chỉ cho mình về useFactory
+- Đây không phải là lần đầu tiên mình thấy, nhưng là lần đầu tiên mình thắc mắc về nó
+- Và nó là một design pattern
+- Giờ mình nghĩ lại mới thấy, design pattern là cách người ta giải quyết vân đề phát sinh trong lúc code, theo mình nghĩ
+- Nó là giải pháp, và có lẽ mình nên biết ít nhiều

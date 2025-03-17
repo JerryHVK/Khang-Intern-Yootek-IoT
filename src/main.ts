@@ -7,6 +7,7 @@ async function bootstrap() {
   
   const app = await NestFactory.create(AppModule);
 
+  /// for Swagger document
   const config = new DocumentBuilder()
     .setTitle('Khang-Intern-Yootek-IoT-API-Document')
     .setDescription('This is an api document for the project i did to learn nestjs in Yootek')
@@ -22,6 +23,8 @@ async function bootstrap() {
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
+
+  // end of "for Swagger document"
 
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(Number(process.env.HOST_PORT));
