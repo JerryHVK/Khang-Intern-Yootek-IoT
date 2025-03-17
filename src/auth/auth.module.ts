@@ -7,10 +7,11 @@ import { jwtConstants } from './constants';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/prisma.service';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { JwtStrategy } from './jwt.strategy';
       secret: jwtConstants.secret,
       signOptions: {expiresIn: '1d'},
     }),
-    PassportModule
+    PassportModule,
+    ConfigModule
   ],
   controllers: [AuthController],
   providers: [
@@ -33,6 +35,7 @@ import { JwtStrategy } from './jwt.strategy';
     },
     JwtStrategy
   ],
-  exports: [AuthService] //?????????? to do what?
+  exports: [AuthService] //-> Export ra cho người khác dùng nữa chứ mày, 
+  //export ra dưới dạng service, có vẻ là sẽ đỡ phải import cả module vào module khác
 })
 export class AuthModule {}

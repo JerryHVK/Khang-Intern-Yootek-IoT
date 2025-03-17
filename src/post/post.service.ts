@@ -28,8 +28,8 @@ export class PostService {
     }
   }
 
-  async findAll(userId: number) {
-    const posts = await this.prismaService.post.findMany({where: {userId: userId}});
+  async findAll() {
+    const posts = await this.prismaService.post.findMany();
     return {
       statusCode: HttpStatus.OK,
       message: "success",
@@ -37,7 +37,7 @@ export class PostService {
     }
   }
 
-  async findOne(userId: number, postId: number) {
+  async findOne(postId: number) {
     const post = await this.checkExistingPost(postId);
     if(post == null){
       return {
@@ -53,7 +53,7 @@ export class PostService {
     }
   }
 
-  async update(userId: number, postId: number, updatePostDto: UpdatePostDto) {
+  async update(postId: number, updatePostDto: UpdatePostDto) {
     const post = await this.checkExistingPost(postId);
     if(post == null){
       return {
@@ -63,7 +63,7 @@ export class PostService {
     }
 
     const updatedPost = await this.prismaService.post.update({
-      where: {userId: userId, id: postId},
+      where: {id: postId},
       data: {
         title: updatePostDto.title,
         content: updatePostDto.content
@@ -77,7 +77,7 @@ export class PostService {
     }
   }
 
-  async remove(userId: number, postId: number) {
+  async remove(postId: number) {
     const post = await this.checkExistingPost(postId);
     if(post == null){
       return {

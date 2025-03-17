@@ -21,6 +21,12 @@ model User{
   address   String?
   posts     Post[]
   Profile   Profile?
+  role      Role    @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 

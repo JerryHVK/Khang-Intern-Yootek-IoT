@@ -1,14 +1,20 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, HttpStatus, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from '@prisma/client';
 import { CreateUserDTO } from './dto/create-user-dto';
 import { UpdateUserDTO } from './dto/update-user-dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/common/roles.decorator';
+import { Role } from 'src/common/role.enum';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService){}
 
     //FindAllUser
+    @ApiBearerAuth()
+    @UseGuards(RolesGuard)
+    @Roles(Role.Admin)
     @Get()
     async findAll(){
         try{
@@ -24,6 +30,9 @@ export class UserController {
         }
     }
     
+    @ApiBearerAuth()
+    @UseGuards(RolesGuard)
+    @Roles(Role.Admin)
     @Get('/:id')
     async findById(@Param('id', ParseIntPipe) id: number){
         try{
@@ -45,6 +54,9 @@ export class UserController {
         }
     }
 
+    @ApiBearerAuth()
+    @UseGuards(RolesGuard)
+    @Roles(Role.Admin)
     @Post()
     async create(@Body() createUserDTO: CreateUserDTO){
         try{
@@ -60,6 +72,9 @@ export class UserController {
         }
     }
 
+    @ApiBearerAuth()
+    @UseGuards(RolesGuard)
+    @Roles(Role.Admin)
     @Put(':id')
     async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDTO: UpdateUserDTO) {
         try{
@@ -75,6 +90,9 @@ export class UserController {
         }
     }
 
+    @ApiBearerAuth()
+    @UseGuards(RolesGuard)
+    @Roles(Role.Admin)
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number) {
         try{
