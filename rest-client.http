@@ -2,9 +2,9 @@
 @hostName = http://localhost
 @hostPort = 3002
 
-@jwtADMINToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0MjE4MDM1MSwiZXhwIjoxNzQyMjY2NzUxfQ.aQQc1o7JKLNk9VLBlf7QimvvQUukRMKPjqFl7wUzsvs
+@jwtADMINToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0MjM2Mjg1NywiZXhwIjoxNzQyNDQ5MjU3fQ.f19SwqcvDK8GroDkyI-HwYvjIVaMAym2b47Cvp_enns
 
-@jwtUSERToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQyMTgwMzYyLCJleHAiOjE3NDIyNjY3NjJ9.InG0fQQL1UJr_76RaYsk5IhKIWeTxFhWoZF3k08cQfM
+@jwtUSERToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQyMzYzMTA3LCJleHAiOjE3NDI0NDk1MDd9.cge4QRtBQB70dj7CX1sBTdjTeyqymT8H0y-LzJtWGuE
 
 
 # @jwtToken = {{jwtUSERToken}}
@@ -47,8 +47,18 @@ Content-Type: application/json
 }
 
 
+#######################################################################
+#######################################################################
 
+// CRUD --- USER
 
+###
+GET {{hostName}}:{{hostPort}}/user
+Authorization: {{jwtToken}}
+
+###
+GET {{hostName}}:{{hostPort}}/user/2
+Authorization: {{jwtToken}}
 
 
 

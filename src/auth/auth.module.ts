@@ -5,12 +5,13 @@ import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 // import { jwtConstants } from './constants';
 import { UserService } from 'src/user/user.service';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProfileModule } from 'src/profile/profile.module';
 
 @Module({
   imports: [
@@ -24,12 +25,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject:[ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWTSECRET'),
-        signOptions: {expiresIn: '1d'},
+        signOptions: {expiresIn: configService.get<string>('JWT_EXPIRES_IN')},
         global: true
       })
     }),
     PassportModule,
-    ConfigModule
+    ConfigModule,
+    ProfileModule
   ],
   controllers: [AuthController],
   providers: [

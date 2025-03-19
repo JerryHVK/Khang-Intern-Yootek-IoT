@@ -4,16 +4,18 @@ import { UserService } from 'src/user/user.service';
 import { SignupUserDTO } from './dto/signup-user-dto';
 import { LoginUserDTO } from './dto/login-user-dto';
 import * as bcrypt from 'bcrypt';
+import { ProfileService } from 'src/profile/profile.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private profileService: ProfileService
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.user({email});
+    const user = await this.userService.checkExistingUserEmail(email);
     if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
@@ -23,7 +25,7 @@ export class AuthService {
 
   async login(loginUserDTO: LoginUserDTO) {
     const email = loginUserDTO.email;
-    const user = await this.userService.user({email});
+    const user = await this.userService.checkExistingUserEmail(email);
 
     // check if email does exist or not
     if(!user){
@@ -57,10 +59,10 @@ export class AuthService {
 
   async signup(signupUserDTO: SignupUserDTO){
     const email = signupUserDTO.email;
-    const user = await this.userService.user({email});
+    const user = await this.userService.checkExistingUserEmail(email);
 
     // check if the email is signed up or not
-    if(user != null){
+    if(user){
       return {
         statusCode: 400,
         message: "This email has been signed up already"
@@ -72,36 +74,11 @@ export class AuthService {
     signupUserDTO.password = password;
 
     // store new user to database
-    const newUser = await this.userService.createUser(signupUserDTO);
-
-    // signup successful, return access token
-    const payload = { sub: newUser.id, role: newUser.role };
-    const access_token = await this.jwtService.signAsync(payload);
+    await this.userService.createUser(signupUserDTO);
 
     return {
       statusCode: 200,
-      message: "Signup successfully",
-      access_token: access_token
+      message: "Signup successfully"
     }
   }
 }
-
-/*
-@Injectable()
-export class AuthService {
-    constructor(private userService: UserService, private jwtService: JwtService) {}
-
-    async signIn(email: string, pass: string): Promise<{access_token: string}>{
-        const user = await this.userService.user({email});
-
-        if(user?.password!= pass){
-            throw new UnauthorizedException();
-        }
-
-        const payload = {sub: user.id, username: user.name};
-        return {
-            access_token: await this.jwtService.signAsync(payload)
-        }
-    }
-}
-*/

@@ -8,10 +8,6 @@ export class UpdateUserDTO{
     @IsOptional()
     readonly name: string;
 
-    // @IsEmail()
-    // @IsOptional()
-    // readonly email: string;
-
     @ApiProperty({description: 'You should provide a strong password, with number, letter and special character'})
     @IsString()
     @IsOptional()

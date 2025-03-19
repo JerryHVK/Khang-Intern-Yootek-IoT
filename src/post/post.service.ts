@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PostService {
@@ -39,7 +39,7 @@ export class PostService {
 
   async findOne(postId: number) {
     const post = await this.checkExistingPost(postId);
-    if(post == null){
+    if(!post){
       return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: "Invalid postId"
@@ -55,7 +55,7 @@ export class PostService {
 
   async update(postId: number, updatePostDto: UpdatePostDto) {
     const post = await this.checkExistingPost(postId);
-    if(post == null){
+    if(!post){
       return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: "Invalid postId"
@@ -79,7 +79,7 @@ export class PostService {
 
   async remove(postId: number) {
     const post = await this.checkExistingPost(postId);
-    if(post == null){
+    if(!post){
       return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: "Invalid postId"

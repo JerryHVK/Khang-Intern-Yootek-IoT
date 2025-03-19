@@ -1,94 +1,150 @@
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { User, Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserDTO } from './dto/create-user-dto';
+import { UpdateUserDTO } from './dto/update-user-dto';
+import { ProfileService } from 'src/profile/profile.service';
+import { UpdateProfileDto } from 'src/profile/dto/update-profile.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private profileService: ProfileService) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    });
+  //////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
+  // FUNCTION TYPE 1: RETURN RESPONSE
+  async findMany(){;
+    const users = await this.prisma.user.findMany();
+    return{
+      statusCode: HttpStatus.OK,
+      message: "successful",
+      data: users
+    }
+  }
 
+  async findOne(id: number){
+    const user = await this.checkExistingUserId(id);
+
+    if(!user){
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "In valid userId"
+      }
+    }
+
+    const userProfile = await this.prisma.user.findUnique({
+      where: {id},
+      include: {
+        Profile: true
+      }
+    })
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "successful",
+      data: userProfile
+    }
+  }
+
+  async createUser(createUserDTO: CreateUserDTO){
+    const existingUser = await this.prisma.user.findUnique({where: {email: createUserDTO.email}});
     
-
-    // if(user == null){
-    //     throw new HttpException("Not valid id", HttpStatus.BAD_REQUEST);
-    // }
-    return user;
-  }
-
-  async users(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    try{
-        return await this.prisma.user.findMany({
-            skip,
-            take,
-            cursor,
-            where,
-            orderBy,
-        });
+    if(existingUser){
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "This email has been already signed up"
+      }
     }
-    catch(err){
-        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    const newUser = await this.prisma.user.create({data: createUserDTO})
+
+    await this.profileService.createEmptyProfile(newUser.id);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: "Created user succesfully"
     }
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    const existingUser = await this.prisma.user.findUnique({where: {email: data.email}})
-    if(existingUser != null){
-        throw new HttpException("Email is already used", HttpStatus.BAD_REQUEST);
+  async deleteUser(id: number){
+    const user = await this.checkExistingUserId(id);
+
+    if(!user){
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "In valid userId"
+      }
     }
-    try{
-        return await this.prisma.user.create({data});
-    }
-    catch(err){
-        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    await this.prisma.user.delete({where: {id}});
+    return{
+      statusCode: HttpStatus.NO_CONTENT,
+      message: "Deleted user successfully"
     }
   }
 
-    async updateUser(params: {
-        where: Prisma.UserWhereUniqueInput;
-        data: Prisma.UserUpdateInput;
-    }): Promise<User> {
-        const { where, data } = params;
-        const existingUser = await this.prisma.user.findUnique({where})
-        if(existingUser == null){
-            throw new HttpException("Invalid userId", HttpStatus.BAD_REQUEST);
-        }
 
-        try {
-            return await this.prisma.user.update({
-                data,
-                where,
-            });
-        } catch (err) {
-            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+  async updateUserBasicInfo(id: number, updateUserDTO: UpdateUserDTO){
+    const user = await this.checkExistingUserId(id);
+
+    if(!user){
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "In valid userId"
+      }
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: {id},
+      data: updateUserDTO
+    })
+
+    return{
+      statusCode: HttpStatus.OK,
+      message: "Updated user successfully",
+      data: updatedUser
+    }
   }
 
-    async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-        const user = await this.prisma.user.findUnique({where})
-        if(user == null){
-            throw new HttpException("Not valid id", HttpStatus.BAD_REQUEST);
-        }
-        
-        try {
-            return await this.prisma.user.delete({
-                where,
-            });
-        } catch (err) {
-            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+  async updateUserProfile(id: number, updateProfileDTO: UpdateProfileDto){
+    const user = await this.checkExistingUserId(id);
+
+    if(!user){
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "In valid userId"
+      }
+    }
+
+    await this.profileService.updateProfile(id, updateProfileDTO);
+    const updatedUser = this.prisma.user.findUnique({
+      where: {id},
+      include: {
+        Profile: true
+      }
+    })
+    
+    return{
+      statusCode: HttpStatus.OK,
+      message: "Updated user successfully",
+      data: updatedUser
+    }
+  }
+
+
+
+
+
+  //////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
+  // FUNCTION TYPE 2: SECONDARY FUNCTIONS
+
+  async checkExistingUserId(id: number){
+    return await this.prisma.user.findUnique({where: {id}});
+  }
+
+  async checkExistingUserEmail(email: string){
+    return await this.prisma.user.findUnique({where: {email}});
   }
 }
